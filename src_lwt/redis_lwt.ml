@@ -21,7 +21,7 @@ module IO = struct
     let do_connect () =
       let port = string_of_int port in
       Lwt_unix.getaddrinfo host port [] >>= function
-      | [] -> failwith "Could not resolve redis host!"
+      | [] -> Lwt.fail_with "Could not resolve redis host!"
       | addrinfo::_ -> return addrinfo.Lwt_unix.ai_addr >>= fun sock_addr ->
       Lwt_unix.connect fd sock_addr >>= fun () ->
       return fd
@@ -51,3 +51,7 @@ end
 module Client = Redis.Client.Make(IO)
 module Cache = Redis.Cache.Make(IO)(Client)
 module Mutex = Redis.Mutex.Make(IO)(Client)
+
+module ClusterClient = Redis.Client.MakeCluster(IO)
+module ClusterCache = Redis.Cache.Make(IO)(ClusterClient)
+module ClusterMutex = Redis.Mutex.Make(IO)(ClusterClient)
