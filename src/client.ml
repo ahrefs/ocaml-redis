@@ -103,7 +103,7 @@ module Common(IO: S.IO) = struct
     let num_args = List.length args in
     IO.output_string out_ch (Printf.sprintf "*%d" num_args) >>= fun () ->
     IO.output_string out_ch "\r\n" >>= fun () ->
-    IO.iter
+    IO.iter_serial
       (fun arg ->
          let length = String.length arg in
          IO.output_string out_ch (Printf.sprintf "$%d" length) >>= fun () ->
